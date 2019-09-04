@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+autopep8 = "*"
+
+[packages]
+requests = "*"
+justlog = "*"
+tabulate = "*"
+colorama = "*"
+transmission-clutch = "*"
+deluge-client = "*"
+python-qbittorrent = "*"
+
+[requires]
+python_version = "3.7"
