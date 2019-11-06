@@ -6,7 +6,7 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
 `pip install raincoat-jackett`
 
 ### Requirements
-- Python 3.x
+- Python 3.6+
 - Jackett and configured indexers
 - qBittorrent, Transmission or Deluge
 
