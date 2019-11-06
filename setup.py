@@ -33,14 +33,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="raincoat-jackett",
-    version="0.3",
+    version="0.4",
     author="Gabisonfire",
     author_email="gabisonfire@github.com",
     description="Raincoat is a tool to search torrents using Jackett and send them to your client.",
     keywords="transmission qbittorrent deluge jackett torrent",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    python_requires=">=3.*",
+    python_requires=">=3.6",
     packages=setuptools.find_packages(),
     entry_points = {
         "console_scripts": ['raincoat = raincoat.raincoat:main']
