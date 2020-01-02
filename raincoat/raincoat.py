@@ -19,11 +19,12 @@ APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("search", help="The field to search.")
-parser.add_argument("-k", "--key", help="The Jackett API key")
+parser.add_argument("-k", "--key", help="The Jackett API key.")
 parser.add_argument("-l", "--length", help="Max results description length.", type=int)
 parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
+parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
 args = parser.parse_args()
 
 # Use default path for the config file and load it initially
@@ -51,6 +52,7 @@ greet(VERSION)
 torrents = []
 APIKEY = cfg['jackett_apikey']
 JACKETT_URL = cfg['jackett_url']
+JACKETT_INDEXER = cfg['jackett_indexer']
 DESC_LENGTH = cfg['description_length']
 EXCLUDE = cfg['exclude']
 RESULTS_LIMIT = cfg['results_limit']
@@ -72,6 +74,10 @@ def set_overrides():
     if args.limit is not None:
         global RESULTS_LIMIT
         RESULTS_LIMIT = args.limit
+
+    if args.indexer is not None:
+        global JACKETT_INDEXER
+        JACKETT_INDEXER = args.key
 
     # Set default sorting
     if args.sort is None:
