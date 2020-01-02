@@ -140,13 +140,14 @@ def search(search_terms):
     global torrents
     torrents = []
     display_table = []
-    for r in res['results']:
-        if filter_out(r['release_name'], EXCLUDE):
+    for r in res['Results']:
+        if filter_out(r['Title'], EXCLUDE):
             continue
-        if len(r['release_name']) > DESC_LENGTH:
-            r['release_name'] = r['release_name'][0:DESC_LENGTH]
-        torrents.append(torrent(id, r['release_name'].encode(
-            'ascii', errors='ignore'), r['type'], r['seeders'], r['leechers'], r['download_url'], r['size']))
+        if len(r['Title']) > DESC_LENGTH:
+            r['Title'] = r['Title'][0:DESC_LENGTH]
+        download_url = r['MagnetUri'] if r['MagnetUri'] else r['Link']
+        torrents.append(torrent(id, r['Title'].encode(
+            'ascii', errors='ignore'), r['CategoryDesc'], r['Seeders'], r['Peers'], download_url, r['Size']))
         id += 1    
 
     # Sort torrents array
