@@ -15,7 +15,8 @@ class PostInstallCommand(install):
             cfg = open(cfg_path, 'x')
             j = dict(
             jackett_apikey="",
-            jackett_url="",
+            jackett_url="http://127.0.0.1:9117",
+            jackett_indexer="all",
             description_length=100,
             exclude="",
             results_limit=20,

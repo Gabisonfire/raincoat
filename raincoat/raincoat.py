@@ -126,7 +126,7 @@ def download(id):
 def search(search_terms):
     print(f"Searching for \"{search_terms}\"...\n")
     try:
-        r = requests.get(f"{JACKETT_URL}api?passkey={APIKEY}&search={search_terms}")
+        r = requests.get(f"{JACKETT_URL}/api/v2.0/indexers/{JACKETT_INDEXER}/results?apikey={APIKEY}&Query={search_terms}")
         if r.status_code != 200:
             print(f"The request to Jackett failed. ({r.status_code})")
             logger.error(f"The request to Jackett failed. ({r.status_code}) :: {JACKETT_URL}api?passkey={APIKEY}&search={search_terms}")
