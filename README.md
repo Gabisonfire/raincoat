@@ -3,9 +3,11 @@
 Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jackett/Jackett)'s indexers and send them directly to your client.
 
 ### Installation
+
 `pip install raincoat-jackett`
 
 ### Requirements
+
 - Python 3.6+
 - Jackett and configured indexers
 - qBittorrent, Transmission or Deluge
@@ -16,16 +18,18 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
 
 #### Parameters
 
- - -k, --key
-   - Specify a Jackett API key
- - -l, --length
-   - Max number of characters displayed in the "Description" column.
- - -L, --limit
-   - Limits the number of results displayed.
- - -c, --config
-   - Specifies a different config path.
- - -s, --sort
-   - Change the sorting criteria. Valid choices are: 'seeders', 'leechers', 'ratio', 'size' and 'description'. Default/not specified is 'seeders'.
+- -k, --key
+  - Specify a Jackett API key
+- -l, --length
+  - Max number of characters displayed in the "Description" column.
+- -L, --limit
+  - Limits the number of results displayed.
+- -c, --config
+  - Specifies a different config path.
+- -s, --sort
+  - Change the sorting criteria. Valid choices are: 'seeders', 'leechers', 'ratio', 'size' and 'description'. Default/not specified is 'seeders'.
+- -i, --indexer
+  - Change the indexer used for your search, in cases where you want to only search one site. Default is "all".
 
 #### Configuration file
 
@@ -33,23 +37,26 @@ Upon installation, a config file is created in your home directory. Before you c
 
 ```json
 {
-	"jackett_apikey":"",
-	"jackett_url":"http://your_jackett_potato_feed",
-	"description_length": 100,
-	"exclude": "words to exclude",
-	"results_limit": 20,
-	"client_url": "http://your_torrent_client_api",
-	"display" : "grid",
-	"torrent_client": "qbittorrent",
-	"torrent_client_username" : "admin",
-	"torrent_client_password" : "admin"
+  "jackett_apikey": "",
+  "jackett_url": "http://your_base_jackett_url",
+  "jacket_indexer": "all",
+  "description_length": 100,
+  "exclude": "words to exclude",
+  "results_limit": 20,
+  "client_url": "http://your_torrent_client_api",
+  "display": "grid",
+  "torrent_client": "qbittorrent",
+  "torrent_client_username": "admin",
+  "torrent_client_password": "admin"
 }
 ```
 
 - jackett_apikey (string)
   - The api key provided by Jackett, found on the dashboard.
 - jackett_url (string)
-  - The jackett Potato feed url. (Not Torznab)
+  - The base url for your jackett instance. (default: http://127.0.0.1:9117)
+- jackett_indexer (string)
+  - The jackett indexer you wish to use for searches.
 - description_length (int)
   - The default description length
 - exclude (string)
@@ -80,4 +87,5 @@ Upon installation, a config file is created in your home directory. Before you c
 All available on Pypi.
 
 # License
+
 This project is licensed under the MIT License

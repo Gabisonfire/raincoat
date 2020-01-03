@@ -14,16 +14,17 @@ from pathlib import Path
 
 
 # Constants
-VERSION = "0.2"
+VERSION = "0.3"
 APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("search", help="The field to search.")
-parser.add_argument("-k", "--key", help="The Jackett API key")
+parser.add_argument("-k", "--key", help="The Jackett API key.")
 parser.add_argument("-l", "--length", help="Max results description length.", type=int)
 parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
+parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
 args = parser.parse_args()
 
 # Use default path for the config file and load it initially
@@ -51,6 +52,7 @@ greet(VERSION)
 torrents = []
 APIKEY = cfg['jackett_apikey']
 JACKETT_URL = cfg['jackett_url']
+JACKETT_INDEXER = cfg['jackett_indexer']
 DESC_LENGTH = cfg['description_length']
 EXCLUDE = cfg['exclude']
 RESULTS_LIMIT = cfg['results_limit']
@@ -72,6 +74,10 @@ def set_overrides():
     if args.limit is not None:
         global RESULTS_LIMIT
         RESULTS_LIMIT = args.limit
+
+    if args.indexer is not None:
+        global JACKETT_INDEXER
+        JACKETT_INDEXER = args.key
 
     # Set default sorting
     if args.sort is None:
@@ -120,7 +126,7 @@ def download(id):
 def search(search_terms):
     print(f"Searching for \"{search_terms}\"...\n")
     try:
-        r = requests.get(f"{JACKETT_URL}api?passkey={APIKEY}&search={search_terms}")
+        r = requests.get(f"{JACKETT_URL}/api/v2.0/indexers/{JACKETT_INDEXER}/results?apikey={APIKEY}&Query={search_terms}")
         if r.status_code != 200:
             print(f"The request to Jackett failed. ({r.status_code})")
             logger.error(f"The request to Jackett failed. ({r.status_code}) :: {JACKETT_URL}api?passkey={APIKEY}&search={search_terms}")
@@ -134,13 +140,14 @@ def search(search_terms):
     global torrents
     torrents = []
     display_table = []
-    for r in res['results']:
-        if filter_out(r['release_name'], EXCLUDE):
+    for r in res['Results']:
+        if filter_out(r['Title'], EXCLUDE):
             continue
-        if len(r['release_name']) > DESC_LENGTH:
-            r['release_name'] = r['release_name'][0:DESC_LENGTH]
-        torrents.append(torrent(id, r['release_name'].encode(
-            'ascii', errors='ignore'), r['type'], r['seeders'], r['leechers'], r['download_url'], r['size']))
+        if len(r['Title']) > DESC_LENGTH:
+            r['Title'] = r['Title'][0:DESC_LENGTH]
+        download_url = r['MagnetUri'] if r['MagnetUri'] else r['Link']
+        torrents.append(torrent(id, r['Title'].encode(
+            'ascii', errors='ignore'), r['CategoryDesc'], r['Seeders'], r['Peers'], download_url, r['Size']))
         id += 1    
 
     # Sort torrents array
