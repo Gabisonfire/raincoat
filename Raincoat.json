@@ -1,0 +1,13 @@
+{
+	"jackett_apikey": "",
+	"jackett_url": "http://127.0.0.1:9117",
+	"jackett_indexer": "all",
+	"description_length": 100,
+	"exclude": "",
+	"results_limit": 20,
+	"client_url": "",
+	"display": "grid",
+	"torrent_client": "transmission",
+	"torrent_client_username": "",
+	"torrent_client_password": ""
+}
