@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 # Constants
-VERSION = "0.3"
+VERSION = "0.5"
 APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
