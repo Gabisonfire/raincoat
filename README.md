@@ -14,7 +14,7 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
 
 ### Usage
 
-`raincoat`
+`raincoat terms_to_search`
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Upon installation, a config file is created in your home directory. Before you c
 {
   "jackett_apikey": "",
   "jackett_url": "http://your_base_jackett_url",
-  "jacket_indexer": "all",
+  "jackett_indexer": "all",
   "description_length": 100,
   "exclude": "words to exclude",
   "results_limit": 20,

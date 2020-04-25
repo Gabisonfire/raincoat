@@ -14,11 +14,11 @@ from pathlib import Path
 
 
 # Constants
-VERSION = "0.5"
+VERSION = "0.7"
 APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("search", help="The field to search.")
+parser.add_argument("search", help="What to search for.")
 parser.add_argument("-k", "--key", help="The Jackett API key.")
 parser.add_argument("-l", "--length", help="Max results description length.", type=int)
 parser.add_argument("-L", "--limit", help="Max number of results.", type=int)

@@ -1,4 +1,4 @@
-from clutch.core import Client as tClient
+from clutch import Client as tClient
 from deluge_client import DelugeRPCClient
 from qbittorrent import Client as qClient
 from .helpers import fetch_torrent_url
