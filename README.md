@@ -10,7 +10,11 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
 
 - Python 3.6+
 - Jackett and configured indexers
-- qBittorrent, Transmission or Deluge
+- qBittorrent, Transmission or Deluge (or use local download option)
+- libtorrent if you use local downloader and magnet links.
+  - Arch: `pacman -S libtorrent-rasterbar`
+  - Ubuntu: `apt-get install python-libtorrent -y`
+  - Fedora: `dnf install rb_libtorrent-python2`
 
 ### Usage
 
@@ -30,6 +34,8 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
   - Change the sorting criteria. Valid choices are: 'seeders', 'leechers', 'ratio', 'size' and 'description'. Default/not specified is 'seeders'.
 - -i, --indexer
   - Change the indexer used for your search, in cases where you want to only search one site. Default is "all".
+- --local
+  - Force use of "local" file download.
 
 #### Configuration file
 
@@ -47,7 +53,8 @@ Upon installation, a config file is created in your home directory. Before you c
   "display": "grid",
   "torrent_client": "qbittorrent",
   "torrent_client_username": "admin",
-  "torrent_client_password": "admin"
+  "torrent_client_password": "admin",
+  "download_dir": "/some/directory/"
 }
 ```
 
@@ -68,11 +75,13 @@ Upon installation, a config file is created in your home directory. Before you c
 - display (string)
   - The display style of the results table. You can view available choices [here](https://pypi.org/project/tabulate/)
 - torrent_client (string)
-  - Your torrent client. Valid options are: qbittorrent, transmission and deluge.
+  - Your torrent client. Valid options are: local, qbittorrent, transmission and deluge.
 - torrent_client_username (string)
   - Your torrent client's login username.
 - torrent_client_password
   - Your torrent client's login password. Note: Only Transmission accepts empty passwords.
+- download_dir
+  - Where to save the torrent files when using "local" downloader.
 
 # Built with
 

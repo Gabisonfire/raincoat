@@ -1,7 +1,8 @@
+import requests
 from clutch import Client as tClient
 from deluge_client import DelugeRPCClient
 from qbittorrent import Client as qClient
-from .helpers import fetch_torrent_url
+from .helpers import fetch_torrent_url, convert_to_torrent
 
 class torrent:
     def __init__(self, id, description, media_type, seeders, leechers, download, size):
@@ -85,6 +86,28 @@ def qbittorrent(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
         logger.debug(f"Adding {torrent.description.decode('ascii')} with url: {url}")
         client.download_from_link(url)
         print("Torrent sent!")
+    except Exception as e:
+        print(f"Unable to send to {TOR_CLIENT}. Check the logs for more information.")
+        logger.error(f"Error sending to {TOR_CLIENT}. {str(e)}")
+        exit()
+
+def local(torrent, download_dir, logger):
+    TOR_CLIENT = "local download"
+    print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
+    url = fetch_torrent_url(torrent)
+
+    try:
+        if url.startswith("magnet:?"):
+            
+            logger.error(f"{torrent.description.decode('ascii')} appears to be a magnet link.")
+            logger.debug(f"Adding {torrent.description.decode('ascii')} with url: {url}")
+            logger.debug(f"Using local download method...")   
+            convert_to_torrent(url, download_dir)
+        else:
+            logger.debug(f"Using local download method...")   
+            r = requests.get(url, allow_redirects=True)
+            open(f"{download_dir}{torrent.description}.torrent", 'wb').write(r.content)
+            print(f"Torrent downloaded! -> {download_dir}{torrent.description}.torrent")
     except Exception as e:
         print(f"Unable to send to {TOR_CLIENT}. Check the logs for more information.")
         logger.error(f"Error sending to {TOR_CLIENT}. {str(e)}")

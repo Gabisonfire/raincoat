@@ -1,5 +1,22 @@
 import requests
+import os.path as pt
+import shutil
+import tempfile
+import sys
+from justlog import justlog, settings
+from justlog.classes import Severity, Output, Format
+from pathlib import Path
+from time import sleep
 
+# Setup logger
+logger = justlog.Logger(settings.Settings())
+logger.settings.colorized_logs = True
+logger.settings.log_output = [Output.FILE]
+logger.settings.log_format = Format.TEXT
+logger.settings.log_file = f"{str(Path.home())}/.config/Raincoat.log"
+logger.settings.update_field("timestamp", "$TIMESTAMP")
+logger.settings.update_field("level", "$CURRENT_LOG_LEVEL")
+logger.settings.string_format = "[ $timestamp ] :: $CURRENT_LOG_LEVEL :: $message"
 
 def greet(VERSION):
     print(r"")
@@ -20,15 +37,63 @@ def get_torrent_by_id(torrents, tid):
             return torrent
     return None
 
-
 def fetch_torrent_url(torrent):
     try:
         r = requests.get(torrent.download, allow_redirects=False)
+        logger.debug(f"{str(r.status_code)}: {r.reason}")
         if r.status_code == 302:
-            return r.headers['Location']
+            if r.headers['Location'] is not None:
+                return r.headers['Location']
+            else:
+                logger.error(f"Bad headers in torrent: ({r.headers})")
         else:
-            print(f"Unexpected return code: {r.status_code}")
+            logger.error(f"Unexpected return code: {r.status_code}")
     except Exception as e:
-        print(f"Could not fetch torrent url: {str(e)}")
+        logger.error(f"Could not fetch torrent url: {str(e)}")
         exit()
 
+def convert_to_torrent(url, save_path):
+    # Importing here to prevent unneeded dependecies
+    import libtorrent as lt
+
+    if not pt.isdir(save_path):
+        print(f"Invalid output folder: {save_path}")
+        sys.exit(0)
+
+    tempdir = tempfile.mkdtemp()
+    ses = lt.session()
+    params = {
+        'save_path': tempdir,
+        'storage_mode': lt.storage_mode_t(2),
+        'url': url
+    }
+    handle = ses.add_torrent(params)
+
+    print("Downloading Metadata (this may take a while)")
+    while (not handle.has_metadata()):
+        try:
+            sleep(1)
+        except KeyboardInterrupt:
+            print("Aborting...")
+            ses.pause()
+            print("Cleanup dir " + tempdir)
+            shutil.rmtree(tempdir)
+            sys.exit(0)
+    ses.pause()
+    print("Done")
+
+    torinfo = handle.get_torrent_info()
+    torfile = lt.create_torrent(torinfo)
+
+    output = pt.abspath(torinfo.name() + ".torrent")
+    output = pt.abspath(pt.join(save_path, torinfo.name() + ".torrent"))
+
+    print(F"Saving torrent file to: {output}...")
+    f = open(output, "wb")
+    f.write(lt.bencode(torfile.generate()))
+    f.close()
+    print("Saved! Cleaning up temp files...")
+    ses.remove_torrent(handle)
+    shutil.rmtree(tempdir)
+
+    return output

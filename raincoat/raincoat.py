@@ -6,7 +6,7 @@ import json
 import os
 from .helpers import greet, get_torrent_by_id, fetch_torrent_url
 from tabulate import tabulate
-from .torrent import torrent, filter_out, transmission, deluge, qbittorrent
+from .torrent import torrent, filter_out, transmission, deluge, qbittorrent, local
 from justlog import justlog, settings
 from justlog.classes import Severity, Output, Format
 from .config import load_config
@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 # Constants
-VERSION = "0.7"
+VERSION = "0.9"
 APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
@@ -25,6 +25,7 @@ parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
 parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
+parser.add_argument("--local", help="Override torrent provider with local download.", action="store_true")
 args = parser.parse_args()
 
 # Use default path for the config file and load it initially
@@ -61,6 +62,7 @@ DISPLAY = cfg['display']
 TOR_CLIENT = cfg['torrent_client']
 TOR_CLIENT_USER = cfg['torrent_client_username']
 TOR_CLIENT_PW = cfg['torrent_client_password']
+DOWNLOAD_DIR = cfg['download_dir']
 
 def set_overrides():
     if args.key is not None:
@@ -82,6 +84,10 @@ def set_overrides():
     # Set default sorting
     if args.sort is None:
         args.sort = "seeders"
+
+    if args.local:
+        global TOR_CLIENT
+        TOR_CLIENT = "local"
 
 def prompt_torrent():
     print("\nCommands: \n\t:download, :d ID\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
@@ -111,17 +117,18 @@ def download(id):
         print(f"Cannot find {id}.")
         logger.warning(f"Invalid id. The ID provided was not found in the list.")
         search(args.search)    
-    else:
+    else:    
         if TOR_CLIENT.lower() == "transmission":
             transmission(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger)
         elif TOR_CLIENT.lower() == "deluge":
             deluge(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger)
         elif TOR_CLIENT.lower() == "qbittorrent":
             qbittorrent(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger)
+        elif TOR_CLIENT.lower() == "local":
+            local(torrent, DOWNLOAD_DIR, logger)            
         else:
             print(f"Unsupported torrent client. ({TOR_CLIENT})")
             exit()
-
 
 def search(search_terms):
     print(f"Searching for \"{search_terms}\"...\n")
@@ -153,16 +160,17 @@ def search(search_terms):
     # Sort torrents array
     sort_torrents(torrents)
 
-    count = 1
+    count = 0
     for tor in torrents:
-        if count > RESULTS_LIMIT:
+        if count >= RESULTS_LIMIT:
             break
+        tor.size = "{:.2f}".format(tor.size/1000000)
         display_table.append([tor.id, tor.description, tor.media_type,
-                              tor.size, tor.seeders, tor.leechers, tor.ratio])
+                              f"{tor.size}GB", tor.seeders, tor.leechers, tor.ratio])
         count += 1
     print(tabulate(display_table, headers=[    
-          "ID", "Description", "Type", "Size (GB)", "Seeders", "Leechers", "Ratio"], floatfmt=".2f", tablefmt=DISPLAY))
-    print(f"\nShowing {count -1} of {len(torrents)}, limit is set to {RESULTS_LIMIT}")
+          "ID", "Description", "Type", "Size", "Seeders", "Leechers", "Ratio"], floatfmt=".2f", tablefmt=DISPLAY))
+    print(f"\nShowing {count} of {len(torrents)}, limit is set to {RESULTS_LIMIT}")
     prompt_torrent()
 
 def sort_torrents(torrents):
