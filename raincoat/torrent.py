@@ -99,7 +99,7 @@ def local(torrent, download_dir, logger):
     try:
         if url.startswith("magnet:?"):
             
-            logger.error(f"{torrent.description.decode('ascii')} appears to be a magnet link.")
+            print(f"{torrent.description.decode('ascii')} appears to be a magnet link.")
             logger.debug(f"Adding {torrent.description.decode('ascii')} with url: {url}")
             logger.debug(f"Using local download method...")   
             convert_to_torrent(url, download_dir)

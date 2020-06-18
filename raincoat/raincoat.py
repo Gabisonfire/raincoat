@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 # Constants
-VERSION = "0.9"
+VERSION = "0.8"
 APP_NAME = "Raincoat"
 
 parser = argparse.ArgumentParser()
@@ -63,6 +63,7 @@ TOR_CLIENT = cfg['torrent_client']
 TOR_CLIENT_USER = cfg['torrent_client_username']
 TOR_CLIENT_PW = cfg['torrent_client_password']
 DOWNLOAD_DIR = cfg['download_dir']
+CURRENT_PAGE = 0
 
 def set_overrides():
     if args.key is not None:
@@ -90,13 +91,16 @@ def set_overrides():
         TOR_CLIENT = "local"
 
 def prompt_torrent():
-    print("\nCommands: \n\t:download, :d ID\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
+    print("\nCommands: \n\t:download, :d ID\n\t:next, :n\n\t:prev, :p\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
     try:
         cmd = input("-> ")
     except Exception as e:
         print(f"Invalid input: {str(e)}")
         prompt_torrent()
     if cmd.startswith(":download") or cmd.startswith(":d"):
+        if len(cmd.split()) < 2:
+            print("Invalid input")
+            prompt_torrent()
         id = cmd.split()[1]
         if not id.isdigit():
             print(f"Not a valid id.({id})")
@@ -107,6 +111,10 @@ def prompt_torrent():
             exit()
     if cmd.startswith(":quit") or cmd.startswith(":q"):
         exit()
+    if cmd.startswith(":next") or cmd.startswith(":n"):
+        display_results(CURRENT_PAGE + 1)
+    if cmd.startswith(":prev") or cmd.startswith(":p"):
+        display_results(CURRENT_PAGE - 1)        
     if cmd.strip() == "":
         prompt_torrent()
     search(cmd)
@@ -146,7 +154,7 @@ def search(search_terms):
     id = 1
     global torrents
     torrents = []
-    display_table = []
+
     for r in res['Results']:
         if filter_out(r['Title'], EXCLUDE):
             continue
@@ -160,17 +168,34 @@ def search(search_terms):
     # Sort torrents array
     sort_torrents(torrents)
 
+    # Display results
+    global CURRENT_PAGE
+    CURRENT_PAGE = 1
+    display_results(CURRENT_PAGE)
+
+def display_results(page):
+    display_table = []
+    global torrents
+    global RESULTS_LIMIT
+    global CURRENT_PAGE
+
+    if page < 1:
+        prompt_torrent()    
+
+    CURRENT_PAGE = page
+
     count = 0
-    for tor in torrents:
+    slice_index = (CURRENT_PAGE - 1) * RESULTS_LIMIT
+    for tor in torrents[slice_index:]:
         if count >= RESULTS_LIMIT:
             break
-        tor.size = "{:.2f}".format(tor.size/1000000)
+        tor.size = "{:.2f}".format(float(tor.size)/1000000)
         display_table.append([tor.id, tor.description, tor.media_type,
                               f"{tor.size}GB", tor.seeders, tor.leechers, tor.ratio])
         count += 1
     print(tabulate(display_table, headers=[    
           "ID", "Description", "Type", "Size", "Seeders", "Leechers", "Ratio"], floatfmt=".2f", tablefmt=DISPLAY))
-    print(f"\nShowing {count} of {len(torrents)}, limit is set to {RESULTS_LIMIT}")
+    print(f"\nShowing page {CURRENT_PAGE} - ({count * CURRENT_PAGE} of {len(torrents)} results), limit is set to {RESULTS_LIMIT}")    
     prompt_torrent()
 
 def sort_torrents(torrents):

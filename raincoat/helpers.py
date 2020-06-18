@@ -80,7 +80,6 @@ def convert_to_torrent(url, save_path):
             shutil.rmtree(tempdir)
             sys.exit(0)
     ses.pause()
-    print("Done")
 
     torinfo = handle.get_torrent_info()
     torfile = lt.create_torrent(torinfo)
@@ -92,8 +91,6 @@ def convert_to_torrent(url, save_path):
     f = open(output, "wb")
     f.write(lt.bencode(torfile.generate()))
     f.close()
-    print("Saved! Cleaning up temp files...")
+    print("Cleaning up temp files...")
     ses.remove_torrent(handle)
     shutil.rmtree(tempdir)
-
-    return output
