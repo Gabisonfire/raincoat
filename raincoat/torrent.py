@@ -100,14 +100,15 @@ def local(torrent, download_dir, logger):
         if url.startswith("magnet:?"):
             
             print(f"{torrent.description.decode('ascii')} appears to be a magnet link.")
-            logger.debug(f"Adding {torrent.description.decode('ascii')} with url: {url}")
-            logger.debug(f"Using local download method...")   
+            logger.info(f"Adding {torrent.description.decode('ascii')} with url: {url}")
+            logger.info(f"Using local download method...")   
             convert_to_torrent(url, download_dir)
         else:
-            logger.debug(f"Using local download method...")   
+            logger.info(f"Using local download method...")   
             r = requests.get(url, allow_redirects=True)
             open(f"{download_dir}{torrent.description}.torrent", 'wb').write(r.content)
             print(f"Torrent downloaded! -> {download_dir}{torrent.description}.torrent")
+            logger.info(f"Torrent downloaded! -> {download_dir}{torrent.description}.torrent")
     except Exception as e:
         print(f"Unable to send to {TOR_CLIENT}. Check the logs for more information.")
         logger.error(f"Error sending to {TOR_CLIENT}. {str(e)}")

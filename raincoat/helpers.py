@@ -3,6 +3,8 @@ import os.path as pt
 import shutil
 import tempfile
 import sys
+import json
+from raincoat import shared as shared
 from justlog import justlog, settings
 from justlog.classes import Severity, Output, Format
 from pathlib import Path
@@ -42,7 +44,10 @@ def fetch_torrent_url(torrent):
         r = requests.get(torrent.download, allow_redirects=False)
         logger.debug(f"Requesting {torrent.download}")
         logger.debug(f"{str(r.status_code)}: {r.reason}")
-        logger.debug(r.content)
+        logger.debug(f"Headers: {json.dumps(dict(r.request.headers))}")
+        if shared.VERBOSE_MODE:
+            logger.debug(f"Content: {r.content.decode()}")
+
         if r.status_code == 302:
             if r.headers['Location'] is not None:
                 return r.headers['Location']
