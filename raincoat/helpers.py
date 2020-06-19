@@ -40,7 +40,9 @@ def get_torrent_by_id(torrents, tid):
 def fetch_torrent_url(torrent):
     try:
         r = requests.get(torrent.download, allow_redirects=False)
+        logger.debug(f"Requesting {torrent.download}")
         logger.debug(f"{str(r.status_code)}: {r.reason}")
+        logger.debug(r.content)
         if r.status_code == 302:
             if r.headers['Location'] is not None:
                 return r.headers['Location']

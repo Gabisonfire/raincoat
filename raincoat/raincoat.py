@@ -146,7 +146,8 @@ def search(search_terms):
             print(f"The request to Jackett failed. ({r.status_code})")
             logger.error(f"The request to Jackett failed. ({r.status_code}) :: {JACKETT_URL}api?passkey={APIKEY}&search={search_terms}")
             exit()
-        res = json.loads(r.content)        
+        res = json.loads(r.content)  
+        logger.debug(f"Got response: {r.content.decode()}")
     except Exception as e:
         print(f"The request to Jackett failed.")
         logger.error(f"The request to Jackett failed. {str(e)}")
