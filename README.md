@@ -18,7 +18,7 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
 
 ### Usage
 
-`raincoat terms_to_search`
+`raincoat "Terms to search"`
 
 #### Parameters
 
