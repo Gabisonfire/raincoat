@@ -1,7 +1,6 @@
 === 0.8 ===
 - Improved size display
-# Added a "Next Page" function
+- Added a "Next Page" function
 - Added local download option
 - Improved error handling
 - Added "--verbose" switch for debugging
-# Added tracker to search results
