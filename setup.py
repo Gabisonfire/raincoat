@@ -34,7 +34,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="raincoat-jackett",
-    version="0.7",
+    version="0.8",
     author="Gabisonfire",
     author_email="gabisonfire@github.com",
     description="Raincoat is a tool to search torrents using Jackett and send them to your client.",
