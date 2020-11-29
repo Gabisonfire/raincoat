@@ -92,8 +92,12 @@ def set_overrides():
 
 def prompt_torrent():
     if shared.DOWNLOAD:
-        download(1)
-        exit()
+        if len(shared.TORRENTS) > 0:
+            download(shared.TORRENTS[0].id)
+            exit()
+        else:
+            print("Search did not return any results.")
+            exit()
     print("\nCommands: \n\t:download, :d ID\n\t:next, :n\n\t:prev, :p\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
     try:
         cmd = input("-> ")
