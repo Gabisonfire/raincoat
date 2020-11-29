@@ -1,3 +1,6 @@
+=== 0.9 ===
+- Added a --download option to grab top result
+
 === 0.8 ===
 - Improved size display
 - Added a "Next Page" function

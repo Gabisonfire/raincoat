@@ -21,6 +21,7 @@ parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
 parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
+parser.add_argument("-d", "--download", help="Download and send the top result to the client and exit.", action="store_true")
 parser.add_argument("--local", help="Override torrent provider with local download.", action="store_true")
 parser.add_argument("--verbose", help="Very verbose output to logs.", action="store_true")
 args = parser.parse_args()
@@ -86,7 +87,13 @@ def set_overrides():
     if args.verbose:
         shared.VERBOSE_MODE = True
 
+    if args.download:
+        shared.DOWNLOAD = True
+
 def prompt_torrent():
+    if shared.DOWNLOAD:
+        download(1)
+        exit()
     print("\nCommands: \n\t:download, :d ID\n\t:next, :n\n\t:prev, :p\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
     try:
         cmd = input("-> ")
