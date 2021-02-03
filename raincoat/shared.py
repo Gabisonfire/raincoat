@@ -36,6 +36,8 @@ def init():
     VERBOSE_MODE = False
     global DOWNLOAD
     DOWNLOAD = False
+    global VERIFY
+    VERIFY = True
 
 
 

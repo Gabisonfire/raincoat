@@ -1,5 +1,6 @@
 === 0.9 ===
 - Added a --download option to grab top result
+- Added an `insecure` feature to allow self-signed certificates.
 
 === 0.8 ===
 - Improved size display

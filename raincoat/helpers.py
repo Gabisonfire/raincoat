@@ -9,6 +9,7 @@ from justlog import justlog, settings
 from justlog.classes import Severity, Output, Format
 from pathlib import Path
 from time import sleep
+from urllib3.exceptions import InsecureRequestWarning
 
 # Setup logger
 logger = justlog.Logger(settings.Settings())
@@ -41,7 +42,9 @@ def get_torrent_by_id(torrents, tid):
 
 def fetch_torrent_url(torrent):
     try:
-        r = requests.get(torrent.download, allow_redirects=False)
+        if shared.VERIFY:
+            requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        r = requests.get(torrent.download, allow_redirects=False, verify=shared.VERIFY)
         logger.debug(f"Requesting {torrent.download}")
         logger.debug(f"{str(r.status_code)}: {r.reason}")
         logger.debug(f"Headers: {json.dumps(dict(r.request.headers))}")
@@ -51,6 +54,11 @@ def fetch_torrent_url(torrent):
         if r.status_code == 302:
             if r.headers['Location'] is not None:
                 return r.headers['Location']
+            else:
+                logger.error(f"Bad headers in torrent: ({r.headers})")
+        elif r.status_code == 200:
+            if r.headers['Link'] is not None:
+                return r.headers['Link']
             else:
                 logger.error(f"Bad headers in torrent: ({r.headers})")
         else:
