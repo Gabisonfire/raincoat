@@ -166,7 +166,7 @@ def search(search_terms):
         res_count = len(res['Results'])
         logger.debug(f"Search yielded {str(res_count)} results.")
         if shared.VERBOSE_MODE:
-            logger.debug(f"Content: {r.content}")
+            logger.debug(f"Search request content: {r.content}")
     except Exception as e:
         print(f"The request to Jackett failed.")
         logger.error(f"The request to Jackett failed. {str(e)}")

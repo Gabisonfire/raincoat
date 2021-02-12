@@ -49,7 +49,7 @@ def fetch_torrent_url(torrent):
         logger.debug(f"{str(r.status_code)}: {r.reason}")
         logger.debug(f"Headers: {json.dumps(dict(r.request.headers))}")
         if shared.VERBOSE_MODE:
-            logger.debug(f"Content: {r.content}")
+            logger.debug(f"Content: {r.content.decode('utf-8')}")
 
         if r.status_code == 302:
             if r.headers['Location'] is not None:

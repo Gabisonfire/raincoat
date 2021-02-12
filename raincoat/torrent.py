@@ -28,7 +28,8 @@ def filter_out(title, exclusions):
 def deluge(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
     TOR_CLIENT = "Deluge"
     print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
-    url = fetch_torrent_url(torrent)
+    #url = fetch_torrent_url(torrent)
+    url = torrent.download
     try:
         logger.debug("Connecting to torrent client...")
         # Connection
@@ -49,7 +50,8 @@ def deluge(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
 def transmission(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
     TOR_CLIENT = "Transmission"
     print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
-    url = fetch_torrent_url(torrent)
+    #url = fetch_torrent_url(torrent)
+    url = torrent.download
     try:
         logger.debug("Connecting to torrent client...")
         # Connection
@@ -73,7 +75,8 @@ def transmission(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
 def qbittorrent(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
     TOR_CLIENT = "qBittorrent"
     print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
-    url = fetch_torrent_url(torrent)
+    #url = fetch_torrent_url(torrent)
+    url = torrent.download
     try:
         logger.debug("Connecting to torrent client...")
         # Connection
@@ -94,7 +97,8 @@ def qbittorrent(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
 def local(torrent, download_dir, logger):
     TOR_CLIENT = "local download"
     print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
-    url = fetch_torrent_url(torrent)
+    #url = fetch_torrent_url(torrent)
+    url = torrent.download
 
     try:
         if url.startswith("magnet:?"):
