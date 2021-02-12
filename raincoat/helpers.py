@@ -49,7 +49,7 @@ def fetch_torrent_url(torrent):
         logger.debug(f"{str(r.status_code)}: {r.reason}")
         logger.debug(f"Headers: {json.dumps(dict(r.request.headers))}")
         if shared.VERBOSE_MODE:
-            logger.debug(f"Content: {r.content.decode('utf-8')}")
+            logger.debug(f"Content: {r.content}")
 
         if r.status_code == 302:
             if r.headers['Location'] is not None:
@@ -57,10 +57,7 @@ def fetch_torrent_url(torrent):
             else:
                 logger.error(f"Bad headers in torrent: ({r.headers})")
         elif r.status_code == 200:
-            if r.headers['Link'] is not None:
-                return r.headers['Link']
-            else:
-                logger.error(f"Bad headers in torrent: ({r.headers})")
+            return torrent.download
         else:
             logger.error(f"Unexpected return code: {r.status_code}")
     except Exception as e:
