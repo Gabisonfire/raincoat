@@ -34,6 +34,10 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
   - Change the sorting criteria. Valid choices are: 'seeders', 'leechers', 'ratio', 'size' and 'description'. Default/not specified is 'seeders'.
 - -i, --indexer
   - Change the indexer used for your search, in cases where you want to only search one site. Default is "all".
+- -d, --download
+  - Grab the first result and send to the client immediately.
+- -K, --insecure
+  - Don't verify certificates  
 - --local
   - Force use of "local" file download.
 - --verbose
