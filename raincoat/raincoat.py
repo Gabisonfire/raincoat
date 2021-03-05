@@ -12,6 +12,7 @@ from justlog import justlog, settings
 from justlog.classes import Severity, Output, Format
 from .config import load_config
 from pathlib import Path
+from urllib3.exceptions import InsecureRequestWarning
 
 parser = argparse.ArgumentParser()
 parser.add_argument("search", help="What to search for.")
@@ -21,6 +22,8 @@ parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
 parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
+parser.add_argument("-d", "--download", help="Download and send the top result to the client and exit.", action="store_true")
+parser.add_argument("-K", "--insecure", help="Enables to use self-signed certificates.", action="store_true")
 parser.add_argument("--local", help="Override torrent provider with local download.", action="store_true")
 parser.add_argument("--verbose", help="Very verbose output to logs.", action="store_true")
 args = parser.parse_args()
@@ -47,7 +50,6 @@ shared.TOR_CLIENT_USER = cfg['torrent_client_username']
 shared.TOR_CLIENT_PW = cfg['torrent_client_password']
 shared.DOWNLOAD_DIR = cfg['download_dir']
 shared.CURRENT_PAGE = 0
-shared.VERBOSE_MODE = False
 
 
 # Setup logger
@@ -86,7 +88,21 @@ def set_overrides():
     if args.verbose:
         shared.VERBOSE_MODE = True
 
+    if args.download:
+        shared.DOWNLOAD = True
+    
+    if args.insecure:
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        shared.VERIFY = False
+
 def prompt_torrent():
+    if shared.DOWNLOAD:
+        if len(shared.TORRENTS) > 0:
+            download(shared.TORRENTS[0].id)
+            exit()
+        else:
+            print("Search did not yield any results.")
+            exit()
     print("\nCommands: \n\t:download, :d ID\n\t:next, :n\n\t:prev, :p\n\t:quit, :q\n\tTo search something else, just type it and press enter.")
     try:
         cmd = input("-> ")
@@ -138,7 +154,7 @@ def search(search_terms):
     print(f"Searching for \"{search_terms}\"...\n")
     try:
         url = f"{shared.JACKETT_URL}/api/v2.0/indexers/{shared.JACKETT_INDEXER}/results?apikey={shared.APIKEY}&Query={search_terms}"
-        r = requests.get(url)
+        r = requests.get(url, verify=shared.VERIFY)
         logger.debug(f"Request made to: {url}")
         logger.debug(f"{str(r.status_code)}: {r.reason}")
         logger.debug(f"Headers: {json.dumps(dict(r.request.headers))}")
@@ -150,7 +166,7 @@ def search(search_terms):
         res_count = len(res['Results'])
         logger.debug(f"Search yielded {str(res_count)} results.")
         if shared.VERBOSE_MODE:
-            logger.debug(f"Content: {r.content.decode()}")
+            logger.debug(f"Search request content: {r.content}")
     except Exception as e:
         print(f"The request to Jackett failed.")
         logger.error(f"The request to Jackett failed. {str(e)}")

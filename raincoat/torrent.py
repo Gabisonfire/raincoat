@@ -95,7 +95,6 @@ def local(torrent, download_dir, logger):
     TOR_CLIENT = "local download"
     print(f"Sending {torrent.description.decode('ascii')} to {TOR_CLIENT}")
     url = fetch_torrent_url(torrent)
-
     try:
         if url.startswith("magnet:?"):
             
