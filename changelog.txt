@@ -1,3 +1,6 @@
+=== 1.0 ===
+- Fixed a minor typo preventing from using indexer parameter in the command line.
+
 === 0.9 ===
 - Added a --download option to grab top result automatically
 - Added an `insecure` feature to allow self-signed certificates.

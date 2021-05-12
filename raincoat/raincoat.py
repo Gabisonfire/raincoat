@@ -76,7 +76,7 @@ def set_overrides():
         shared.RESULTS_LIMIT = args.limit
 
     if args.indexer is not None:        
-        shared.JACKETT_INDEXER = args.key
+        shared.JACKETT_INDEXER = args.indexer
 
     # Set default sorting
     if args.sort is None:
