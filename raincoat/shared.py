@@ -1,7 +1,7 @@
 # Globals
 def init():
     global VERSION
-    VERSION = "1.0"
+    VERSION = "1.1"
     global APP_NAME
     APP_NAME = "Raincoat"
     global TORRENTS
@@ -35,7 +35,7 @@ def init():
     global VERBOSE_MODE
     VERBOSE_MODE = False
     global DOWNLOAD
-    DOWNLOAD = False
+    DOWNLOAD = 0
     global VERIFY
     VERIFY = True
 

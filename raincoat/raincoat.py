@@ -22,7 +22,7 @@ parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
 parser.add_argument("-s", "--sort", help="Change sorting criteria.", action="store", dest="sort", choices=['seeders', 'leechers', 'ratio', 'size', 'description'])
 parser.add_argument("-i", "--indexer", help="The Jackett indexer to use for your search.")
-parser.add_argument("-d", "--download", help="Download and send the top result to the client and exit.", action="store_true")
+parser.add_argument("-d", "--download", help="Download and send the top 'x' results (defaults to 1) to the client and exit.", nargs='?', const=1, type=int)
 parser.add_argument("-K", "--insecure", help="Enables to use self-signed certificates.", action="store_true")
 parser.add_argument("--local", help="Override torrent provider with local download.", action="store_true")
 parser.add_argument("--verbose", help="Very verbose output to logs.", action="store_true")
@@ -89,7 +89,7 @@ def set_overrides():
         shared.VERBOSE_MODE = True
 
     if args.download:
-        shared.DOWNLOAD = True
+        shared.DOWNLOAD = args.download
     
     if args.insecure:
         requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -98,7 +98,11 @@ def set_overrides():
 def prompt_torrent():
     if shared.DOWNLOAD:
         if len(shared.TORRENTS) > 0:
-            download(shared.TORRENTS[0].id)
+            # Prevent out of bound results
+            if shared.DOWNLOAD > len(shared.TORRENTS):
+                shared.DOWNLOAD = len(shared.TORRENTS)
+            for i in range(shared.DOWNLOAD):
+                download(shared.TORRENTS[i].id)
             exit()
         else:
             print("Search did not yield any results.")

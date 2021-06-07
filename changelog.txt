@@ -1,3 +1,6 @@
+=== 1.1 ===
+- Added the option to specify the number of entries to dowload automatically
+
 === 1.0 ===
 - Fixed a minor typo preventing from using indexer parameter in the command line.
 
