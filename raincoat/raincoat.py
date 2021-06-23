@@ -15,8 +15,9 @@ from pathlib import Path
 from urllib3.exceptions import InsecureRequestWarning
 
 parser = argparse.ArgumentParser()
-parser.add_argument("search", help="What to search for.")
+parser.add_argument("search", help="What to search for.", nargs='?')
 parser.add_argument("-k", "--key", help="The Jackett API key.")
+parser.add_argument("--list", help="Path to a file of terms to search.", type=str)
 parser.add_argument("-l", "--length", help="Max results description length.", type=int)
 parser.add_argument("-L", "--limit", help="Max number of results.", type=int)
 parser.add_argument("-c", "--config", help="Specify a different config file path.")
@@ -94,6 +95,14 @@ def set_overrides():
     if args.insecure:
         requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
         shared.VERIFY = False
+
+    if args.list:        
+        if os.path.exists(args.list):
+            print(args.list)
+            shared.TERM_FILE = args.list
+        else:
+            print(f"{args.list} does not exist.")
+            exit()
 
 def prompt_torrent():
     if shared.DOWNLOAD:
@@ -227,4 +236,12 @@ def sort_torrents(torrents):
 
 def main():
     set_overrides()
-    search(args.search)
+    if shared.TERM_FILE is not None:
+        f = open(shared.TERM_FILE, 'r')
+        for line in f.readlines():
+            search(line)
+    elif not args.search:
+        print("Nothing to search for.")
+        exit()
+    else:
+        search(args.search)
