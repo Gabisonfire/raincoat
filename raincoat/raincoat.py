@@ -98,7 +98,6 @@ def set_overrides():
 
     if args.list:        
         if os.path.exists(args.list):
-            print(args.list)
             shared.TERM_FILE = args.list
         else:
             print(f"{args.list} does not exist.")
@@ -239,7 +238,7 @@ def main():
     if shared.TERM_FILE is not None:
         f = open(shared.TERM_FILE, 'r')
         for line in f.readlines():
-            search(line)
+            search(line.strip())
     elif not args.search:
         print("Nothing to search for.")
         exit()
