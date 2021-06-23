@@ -40,6 +40,8 @@ Raincoat is a CLI tool to search torrents using [Jackett](https://github.com/Jac
   - Don't verify certificates  
 - --local
   - Force use of "local" file download.
+- --list
+  - Specify a file to load search terms from. One term per line.
 - --verbose
   - Extra verbose logging sent to log file.
 
