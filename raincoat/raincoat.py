@@ -111,7 +111,10 @@ def prompt_torrent():
                 shared.DOWNLOAD = len(shared.TORRENTS)
             for i in range(shared.DOWNLOAD):
                 download(shared.TORRENTS[i].id)
-            exit()
+            if shared.TERM_FILE != None:
+                return
+            else:
+                exit()
         else:
             print("Search did not yield any results.")
             exit()
@@ -239,6 +242,7 @@ def main():
         f = open(shared.TERM_FILE, 'r')
         for line in f.readlines():
             search(line.strip())
+        exit()
     elif not args.search:
         print("Nothing to search for.")
         exit()
