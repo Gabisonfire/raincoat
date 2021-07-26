@@ -63,7 +63,7 @@ def transmission(torrent, CLIENT_URL, TOR_CLIENT_USER, TOR_CLIENT_PW, logger):
                                        
         # Add torrent
         logger.debug(f"Adding {torrent.description.decode('ascii')} with url: {url}")
-        client.torrent.add(filename=url)
+        client.torrent.add({"filename": url})
         print("Torrent sent!")
     except Exception as e:
         print(f"Unable to send to {TOR_CLIENT}. Check the logs for more information.")
