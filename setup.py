@@ -24,7 +24,8 @@ class PostInstallCommand(install):
             display="grid",
             torrent_client="transmission",
             torrent_client_username="",
-            torrent_client_password=""
+            torrent_client_password="",
+            download_dir=""
             )
             json.dump(j, cfg, indent=4)
         install.run(self)
