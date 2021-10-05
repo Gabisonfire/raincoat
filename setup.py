@@ -24,7 +24,8 @@ class PostInstallCommand(install):
             display="grid",
             torrent_client="transmission",
             torrent_client_username="",
-            torrent_client_password=""
+            torrent_client_password="",
+            download_dir=""
             )
             json.dump(j, cfg, indent=4)
         install.run(self)
@@ -34,7 +35,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="raincoat-jackett",
-    version="1.2",
+    version="1.3",
     author="Gabisonfire",
     author_email="gabisonfire@github.com",
     description="Raincoat is a tool to search torrents using Jackett and send them to your client.",
@@ -53,7 +54,7 @@ setuptools.setup(
         "Operating System :: Unix",
         "Topic :: Communications :: File Sharing",
     ],
-    install_requires=["requests==2.23.0", "justlog", "colorama==0.4.3", "tabulate==0.8.7", "transmission-clutch==3.1.0", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
+    install_requires=["requests==2.23.0", "justlog", "colorama==0.4.3", "tabulate==0.8.7", "transmission-clutch==6.0.2", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
     cmdclass={
         'install': PostInstallCommand
     },
