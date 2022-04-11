@@ -44,6 +44,8 @@ def fetch_torrent_url(torrent):
     try:
         if shared.VERIFY:
             requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        if torrent.download.startswith('magnet:?xt=urn:btih:'):
+            return torrent.download
         r = requests.get(torrent.download, allow_redirects=False, verify=shared.VERIFY)
         logger.debug(f"Requesting {torrent.download}")
         logger.debug(f"{str(r.status_code)}: {r.reason}")
