@@ -54,7 +54,7 @@ setuptools.setup(
         "Operating System :: Unix",
         "Topic :: Communications :: File Sharing",
     ],
-    install_requires=["requests==2.23.0", "justlog", "colorama==0.4.3", "tabulate==0.8.7", "transmission-clutch==6.0.2", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
+    install_requires=["requests==2.23.0", "justlog", "colorama==0.4.3", "tabulate==0.8.10", "transmission-clutch==6.0.2", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
     cmdclass={
         'install': PostInstallCommand
     },
