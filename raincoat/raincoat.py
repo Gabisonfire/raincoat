@@ -1,15 +1,14 @@
 import argparse
 import colorama
 import requests
-import justlog
+import logging
 import json
 import os
+import sys
 from raincoat import shared
 from .helpers import greet, get_torrent_by_id, fetch_torrent_url
 from tabulate import tabulate
 from .torrent import torrent, filter_out, transmission, deluge, qbittorrent, local
-from justlog import justlog, settings
-from justlog.classes import Severity, Output, Format
 from .config import load_config
 from pathlib import Path
 from urllib3.exceptions import InsecureRequestWarning
@@ -54,14 +53,12 @@ shared.CURRENT_PAGE = 0
 
 
 # Setup logger
-logger = justlog.Logger(settings.Settings())
-logger.settings.colorized_logs = True
-logger.settings.log_output = [Output.FILE]
-logger.settings.log_format = Format.TEXT
-logger.settings.log_file = f"{str(Path.home())}/.config/{shared.APP_NAME}.log"
-logger.settings.update_field("timestamp", "$TIMESTAMP")
-logger.settings.update_field("level", "$CURRENT_LOG_LEVEL")
-logger.settings.string_format = "[ $timestamp ] :: $CURRENT_LOG_LEVEL :: $message"
+logger = logging.getLogger("raincoat")
+logger.setLevel(logging.DEBUG)
+console = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(filename)s - %(message)s', datefmt='%y-%m-%d,%H:%M:%S')
+console.setFormatter(formatter)
+logger.addHandler(console)
 
 logger.debug(f"{shared.APP_NAME} v{shared.VERSION}")
 greet(shared.VERSION)

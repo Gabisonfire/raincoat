@@ -35,14 +35,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="raincoat-jackett",
-    version="1.3.2",
+    version="1.3.3",
     author="Gabisonfire",
     author_email="gabisonfire@github.com",
     description="Raincoat is a tool to search torrents using Jackett and send them to your client.",
     keywords="transmission qbittorrent deluge jackett torrent",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    python_requires=">=3.6",
+    python_requires=">=3.7.17",
     packages=setuptools.find_packages(),
     entry_points = {
         "console_scripts": ['raincoat = raincoat.raincoat:main']
@@ -54,7 +54,7 @@ setuptools.setup(
         "Operating System :: Unix",
         "Topic :: Communications :: File Sharing",
     ],
-    install_requires=["requests==2.23.0", "justlog", "colorama==0.4.3", "tabulate==0.8.10", "transmission-clutch==6.0.2", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
+    install_requires=["requests==2.23.0", "colorama==0.4.3", "tabulate==0.8.10", "transmission-clutch==6.0.2", "deluge-client==1.8.0", "python-qbittorrent==0.4.2"],
     cmdclass={
         'install': PostInstallCommand
     },
