@@ -4,22 +4,19 @@ import shutil
 import tempfile
 import sys
 import json
+import logging
 from raincoat import shared as shared
-from justlog import justlog, settings
-from justlog.classes import Severity, Output, Format
 from pathlib import Path
 from time import sleep
 from urllib3.exceptions import InsecureRequestWarning
 
 # Setup logger
-logger = justlog.Logger(settings.Settings())
-logger.settings.colorized_logs = True
-logger.settings.log_output = [Output.FILE]
-logger.settings.log_format = Format.TEXT
-logger.settings.log_file = f"{str(Path.home())}/.config/Raincoat.log"
-logger.settings.update_field("timestamp", "$TIMESTAMP")
-logger.settings.update_field("level", "$CURRENT_LOG_LEVEL")
-logger.settings.string_format = "[ $timestamp ] :: $CURRENT_LOG_LEVEL :: $message"
+logger = logging.getLogger("raincoat")
+logger.setLevel(logging.DEBUG)
+console = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(filename)s - %(message)s', datefmt='%y-%m-%d,%H:%M:%S')
+console.setFormatter(formatter)
+logger.addHandler(console)
 
 def greet(VERSION):
     print(r"")
